@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - Healthcare MS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="d-flex" style="margin-top: 56px;">
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        <div class="main-content flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary mb-0"><i class="bi bi-person-badge me-2"></i>Doctors</h2>
+                <a href="/doctors/add" class="btn btn-primary rounded-3">
+                    <i class="bi bi-person-plus-fill me-1"></i>Add Doctor
+                </a>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show rounded-3">
+                <i class="bi bi-check-circle me-2"></i><span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(doctors)}" class="text-center py-5 text-muted">
+                        <i class="bi bi-person-badge fs-1 d-block mb-2"></i>
+                        <p>No doctors found</p>
+                        <a href="/doctors/add" class="btn btn-primary btn-sm">Add First Doctor</a>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(doctors)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Specialization</th>
+                                    <th>Qualification</th>
+                                    <th>Experience</th>
+                                    <th>Fee</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="doctor : ${doctors}">
+                                    <td th:text="${doctor.id}"></td>
+                                    <td class="fw-semibold" th:text="${doctor.name}"></td>
+                                    <td><span class="badge bg-primary bg-opacity-10 text-primary" th:text="${doctor.specialization}"></span></td>
+                                    <td th:text="${doctor.qualification}"></td>
+                                    <td th:text="${doctor.experience} + ' yrs'"></td>
+                                    <td th:text="'$' + ${doctor.consultationFee}"></td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                              th:classappend="${doctor.status.name() == 'AVAILABLE'} ? 'bg-success' : 'bg-secondary'"
+                                              th:text="${doctor.status}"></span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a th:href="@{/doctors/edit/{id}(id=${doctor.id})}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                            <a th:href="@{/doctors/delete/{id}(id=${doctor.id})}" class="btn btn-outline-danger"
+                                               onclick="return confirm('Delete this doctor?')"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

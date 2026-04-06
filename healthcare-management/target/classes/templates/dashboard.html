@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Healthcare MS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="d-flex" style="margin-top: 56px;">
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <div class="main-content flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-primary mb-1">Dashboard</h2>
+                    <p class="text-muted mb-0">Welcome to Healthcare Management System</p>
+                </div>
+                <span class="badge bg-light text-dark fs-6" th:text="'Today: ' + ${T(java.time.LocalDate).now()}"></span>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 stat-card">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
+                                <i class="bi bi-people-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Total Patients</h6>
+                                <h3 class="fw-bold mb-0" th:text="${totalPatients}">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 stat-card">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success rounded-3 p-3 me-3">
+                                <i class="bi bi-person-check-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Active Patients</h6>
+                                <h3 class="fw-bold mb-0" th:text="${activePatients}">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 stat-card">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="stat-icon bg-info bg-opacity-10 text-info rounded-3 p-3 me-3">
+                                <i class="bi bi-person-badge-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Total Doctors</h6>
+                                <h3 class="fw-bold mb-0" th:text="${totalDoctors}">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 stat-card">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3 me-3">
+                                <i class="bi bi-calendar-check-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1">Appointments</h6>
+                                <h3 class="fw-bold mb-0" th:text="${totalAppointments}">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 quick-action-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-person-plus-fill text-primary fs-1 mb-3 d-block"></i>
+                            <h5 class="fw-bold">Register Patient</h5>
+                            <p class="text-muted small">Add a new patient to the system</p>
+                            <a href="/patients/add" class="btn btn-primary rounded-3">Register Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 quick-action-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-calendar-plus text-success fs-1 mb-3 d-block"></i>
+                            <h5 class="fw-bold">Book Appointment</h5>
+                            <p class="text-muted small">Schedule a new appointment</p>
+                            <a href="/appointments/book" class="btn btn-success rounded-3">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 quick-action-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-search text-info fs-1 mb-3 d-block"></i>
+                            <h5 class="fw-bold">Search Patient</h5>
+                            <p class="text-muted small">Find patient records quickly</p>
+                            <a href="/patients" class="btn btn-info text-white rounded-3">Search Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Appointments -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-clock me-2 text-primary"></i>Today's Appointments</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(todayAppointments)}" class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                        <p>No appointments scheduled for today</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(todayAppointments)}" class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="apt : ${todayAppointments}">
+                                    <td th:text="${apt.appointmentTime}"></td>
+                                    <td th:text="${apt.patient.name}"></td>
+                                    <td th:text="${apt.doctor.name}"></td>
+                                    <td th:text="${apt.reason}"></td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                              th:classappend="${apt.status.name() == 'SCHEDULED'} ? 'bg-primary' : (${apt.status.name() == 'COMPLETED'} ? 'bg-success' : 'bg-danger')"
+                                              th:text="${apt.status}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

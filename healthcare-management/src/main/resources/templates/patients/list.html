@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients - Healthcare MS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="d-flex" style="margin-top: 56px;">
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        <div class="main-content flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary mb-0"><i class="bi bi-people me-2"></i>Patients</h2>
+                <a href="/patients/add" class="btn btn-primary rounded-3">
+                    <i class="bi bi-person-plus me-1"></i>Register Patient
+                </a>
+            </div>
+
+            <!-- Success Message -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-check-circle me-2"></i><span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body py-3">
+                    <form action="/patients/search" method="get" class="d-flex gap-2">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" name="keyword" class="form-control border-start-0" placeholder="Search by name, disease, or phone..." th:value="${keyword}">
+                        </div>
+                        <button type="submit" class="btn btn-primary px-4">Search</button>
+                        <a href="/patients" class="btn btn-outline-secondary">Clear</a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Patients Table -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(patients)}" class="text-center py-5 text-muted">
+                        <i class="bi bi-people fs-1 d-block mb-2"></i>
+                        <p>No patients found</p>
+                        <a href="/patients/add" class="btn btn-primary btn-sm">Register First Patient</a>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(patients)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Phone</th>
+                                    <th>Disease</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="patient : ${patients}">
+                                    <td th:text="${patient.id}"></td>
+                                    <td class="fw-semibold" th:text="${patient.name}"></td>
+                                    <td th:text="${patient.age}"></td>
+                                    <td th:text="${patient.gender}"></td>
+                                    <td th:text="${patient.phone}"></td>
+                                    <td><span class="badge bg-info bg-opacity-10 text-info" th:text="${patient.disease}"></span></td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                              th:classappend="${patient.status.name() == 'ACTIVE'} ? 'bg-success' : (${patient.status.name() == 'CANCELLED'} ? 'bg-danger' : 'bg-secondary')"
+                                              th:text="${patient.status}"></span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a th:href="@{/patients/edit/{id}(id=${patient.id})}" class="btn btn-outline-primary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a th:href="@{/appointments/history/{id}(id=${patient.id})}" class="btn btn-outline-info" title="History">
+                                                <i class="bi bi-clock-history"></i>
+                                            </a>
+                                            <a th:href="@{/patients/cancel/{id}(id=${patient.id})}" class="btn btn-outline-warning" title="Cancel Registration"
+                                               onclick="return confirm('Cancel this patient registration?')">
+                                                <i class="bi bi-x-circle"></i>
+                                            </a>
+                                            <a th:href="@{/patients/delete/{id}(id=${patient.id})}" class="btn btn-outline-danger" title="Delete"
+                                               onclick="return confirm('Are you sure you want to delete this patient?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

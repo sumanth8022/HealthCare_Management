@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment History - Healthcare MS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="d-flex" style="margin-top: 56px;">
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        <div class="main-content flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-primary mb-1"><i class="bi bi-clock-history me-2"></i>Appointment History</h2>
+                    <p class="text-muted mb-0">Patient: <strong th:text="${patient.name}"></strong></p>
+                </div>
+                <a href="/patients" class="btn btn-outline-secondary rounded-3">Back to Patients</a>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(appointments)}" class="text-center py-5 text-muted">
+                        <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                        <p>No appointment history for this patient</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(appointments)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                    <th>Reason</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="apt : ${appointments}">
+                                    <td th:text="${apt.appointmentDate}"></td>
+                                    <td th:text="${apt.appointmentTime}"></td>
+                                    <td th:text="${apt.doctor.name}"></td>
+                                    <td th:text="${apt.doctor.specialization}"></td>
+                                    <td th:text="${apt.reason}"></td>
+                                    <td th:text="${apt.notes}"></td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                              th:classappend="${apt.status.name() == 'COMPLETED'} ? 'bg-success' : (${apt.status.name() == 'SCHEDULED'} ? 'bg-primary' : 'bg-danger')"
+                                              th:text="${apt.status}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
